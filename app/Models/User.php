@@ -30,7 +30,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
+        'remember_token'
     ];
 
     /**
@@ -41,4 +41,24 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public static function createRules($merge=[]) {
+        return array_merge(
+            [
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:6|confirmed'
+            ], $merge
+        );
+    }
+
+    public static function updateRules($id, $merge=[]) {
+        return array_merge(
+            [
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,'.$id,
+                'password' => 'required|string|min:6'
+            ], $merge
+        );
+    }
 }
